@@ -1,58 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ChatGPT() {
   const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
+  const [history, setHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); 
+  const endOfMessagesRef = useRef(null);
+
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [history]);
 
   const HTTP = "http://localhost:8080/chat";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const userMessage = prompt;
+    if (!userMessage.trim()) return;
+    setIsLoading(true); // Початок загрузки
+    const newHistoryItem = { type: 'user', text: userMessage };
+    setHistory(prevHistory => [...prevHistory, newHistoryItem]);
+    setPrompt(""); // Очистити поле вводу
 
-    axios.post(HTTP, { prompt })
-        .then((res) => {
-        if (res.data && res.data.text && res.data.text.content) {
-        setResponse(res.data.text.content);
-        } else {
-        setResponse("Виникла проблема при отриманні відповіді від сервера. Будь ласка, спробуйте знову.");
-        }
-        })
-        .catch((error) => {
-            console.error("Помилка при запиті до сервера:", error);
-            setResponse("Виникла помилка при спробі відправити запит. Будь ласка, перевірте ваше з'єднання та спробуйте знову.");
-        });
-
-        setPrompt("");
-  };
-
-  const handlePrompt = (e) => {
-    setPrompt(e.target.value);
+    try {
+      const response = await axios.post(HTTP, { prompt: userMessage });
+      setIsLoading(false); 
+      const botResponse = response.data.text.content; 
+      setHistory(prevHistory => [...prevHistory, { type: 'bot', text: botResponse }]);
+    } catch (error) {
+      setIsLoading(false); 
+      setHistory(prevHistory => [...prevHistory, { type: 'bot', text: "Виникла помилка при спробі відправити запит." }]);
+      console.error("Помилка при запиті до сервера:", error);
+    }
   };
 
   return (
-    <div className="container container-sm p-1">
-      <h1 className="title text-center text-darkGreen">ChatGPT API</h1>
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="chatPrompt">Ask questions</label>
+    <div className="chat-container">
+      <div className="messages-container">
+        {history.map((entry, index) => (
+          <div key={index} className={`message ${entry.type}`}>
+            <span className="message-text">{entry.text}</span>
+          </div>
+        ))}
+        {isLoading && <div className="loader">Loading...</div>}
+        <div ref={endOfMessagesRef} />
+      </div>
+      <div className="input-area">
+        <form onSubmit={handleSubmit}>
           <input
-            id="chatPrompt"
-            className="shadow-sm"
             type="text"
-            placeholder="Enter text"
+            className="input-field"
+            placeholder="Type a message..."
             value={prompt}
-            onChange={handlePrompt}
+            onChange={e => setPrompt(e.target.value)}
+            disabled={isLoading} 
           />
-        </div>
-        <button className="btn btn-accept w-100" type="submit">
-          Go
-        </button>
-      </form>
-      <div className="bg-darkGreen mt-2 p-1 border-5">
-        <p className="text-light">
-          {response ? response : "Ask me anything..."}
-        </p>
+          <button type="submit" className="send-button" disabled={isLoading}>Send</button>
+        </form>
       </div>
     </div>
   );
