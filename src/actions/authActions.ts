@@ -23,7 +23,7 @@ export const loginUser = (user: any) => {
         toast.success("Login successful!");
         const { token } = data;
         console.log("Отримано токен", token);
-
+        localStorage.setItem('token', token); 
         localStorage.setItem('AccessToken', token);
         authUser(token, dispatch);
       }
@@ -49,14 +49,12 @@ export const authUser = (token: string, dispatch: Dispatch<UserActions>) => {
 
 // Інші дії...
 
-export const logoutUser = (id: string) => {
-  return async (dispatch: Dispatch<UserActions>): Promise<void> => {
-    const { data } = await logout(id);
-    if (data.success) {
-      localStorage.removeItem('AccessToken');
-      localStorage.removeItem('RefreshToken');
-      dispatch({ type: UserActionTypes.LOGOUT_USER });
-    }
+export const logoutUser = () => {
+  return (dispatch: Dispatch<UserActions>) => {
+    localStorage.removeItem('AccessToken');
+    localStorage.removeItem('RefreshToken');
+    dispatch({ type: UserActionTypes.LOGOUT_USER });
+    toast.success('Successfully logged out');
   };
 };
 

@@ -1,21 +1,32 @@
+/* src/components/Auth.css */
+body, html, #root {
+  background-color: #f8f9fa; /* Білий фон для всього тіла */
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif; /* Шрифт для всього тіла */
+}
+
 .auth-container {
-    margin-top: 50px;
-  }
-  
-  .auth-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .auth-button {
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.auth-form {
+  background-color: #fff; /* Білий фон для форми */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+h2, label, input, button {
+  font-family: Arial, sans-serif; /* Встановлюємо шрифт для заголовків, лейблів, інпутів та кнопок */
+}
