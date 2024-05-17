@@ -1,6 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import { ChatActionTypes, ChatActions } from './types';
+
+
 
 export const fetchUserChats = (userId: number) => {
   return async (dispatch: Dispatch<ChatActions>) => {
@@ -36,18 +38,41 @@ export const deleteUserChat = (chatId: number) => {
     }
   };
 };
-
-export const sendNewMessage = (messageData: { userId: number, prompt: string }) => {
-  return async (dispatch: Dispatch<ChatActions>) => {
+export const sendNewMessage = (prompt: string) => {
+  return async (dispatch: Dispatch<ChatActions>, getState: () => any) => {
     try {
-      const response = await axios.post(`https://localhost:7004/api/Chat/send`, messageData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const userId = getState().user.user.Id;
+      console.log(1);
+      console.log("sendNewMessage: Sending message", { userId, prompt });
+
+      const response: AxiosResponse<any, any> = await axios.post(
+        `https://localhost:7004/api/Chat/send`,
+        JSON.stringify(prompt),
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const { response: responseData } = response.data;
+      const [chatSessionStr, chatIdStr, messageStr] = responseData.split(',').map((item: string) => item.trim());
+      const chatSessionId = parseInt(chatSessionStr.split(':')[1].trim());
+      const chatId = chatIdStr.split(':')[1].trim();
+      const message = messageStr.split(':')[1].trim();
+      
+      console.log("ChatSession:", chatSessionId);
+      console.log("Chat ID:", chatId);
+      console.log("Message:", message);
+
       dispatch({ type: ChatActionTypes.SEND_MESSAGE_SUCCESS, payload: response.data });
-      dispatch(fetchUserChats(messageData.userId) as any);
+      dispatch(fetchUserChats(userId) as any);
+      dispatch(selectChat({ id: chatSessionId, name: chatId }) as any); 
+      dispatch(fetchMessages(chatSessionId) as any);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Error sending message:', error);
+        console.error('Error sending message:', error.response?.data);
         dispatch({ type: ChatActionTypes.SEND_MESSAGE_FAILURE, payload: error.message });
       } else {
         console.error('Unexpected error:', error);
@@ -57,18 +82,24 @@ export const sendNewMessage = (messageData: { userId: number, prompt: string }) 
   };
 };
 
+
 export const continueChat = (messageData: { chatSessionId: number, prompt: string }) => {
   return async (dispatch: Dispatch<ChatActions>, getState: () => any) => {
     try {
+      console.log(2);
       console.log("continueChat: Continuing chat", messageData);
       const response = await axios.post(`https://localhost:7004/api/Chat/continue`, messageData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       console.log("continueChat: Response received", response.data);
 
-      const botResponse = response.data.response; 
+      let botResponse = response.data.response;
+      if (botResponse.startsWith("Message: ")) {
+        botResponse = botResponse.slice(9);
+      }
 
       dispatch({ type: ChatActionTypes.SEND_MESSAGE_SUCCESS, payload: { content: botResponse, role: "bot", id: Date.now() } });
+      
 
       const { user } = getState();
       if (user.user) {
@@ -107,3 +138,7 @@ export const selectChat = (chat: any) => {
     payload: chat,
   };
 };
+
+export const clearMessages = () => ({
+  type: ChatActionTypes.CLEAR_MESSAGES,
+});

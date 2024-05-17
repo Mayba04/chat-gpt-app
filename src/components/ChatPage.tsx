@@ -25,13 +25,15 @@ const ChatPage: React.FC = () => {
     if (input.trim()) {
       const userMessage = { id: Date.now(), content: input, role: "user" };
       dispatch({ type: ChatActionTypes.ADD_MESSAGE, payload: userMessage });
-
+  
       setLoading(true);
       try {
         if (selectedChat) {
+          console.log(2);
           await dispatch(continueChat({ chatSessionId: selectedChat.id, prompt: input }) as any);
         } else {
-          await dispatch(sendNewMessage({ userId: user.id, prompt: input }) as any);
+          console.log(1);
+          await dispatch(sendNewMessage(input) as any);
         }
         setInput("");
       } catch (error) {
@@ -41,6 +43,22 @@ const ChatPage: React.FC = () => {
       }
     }
   };
+  
+
+  // const renderMessage = (msg: any) => {
+  //   const isUser = msg.role === "user";
+  //   const content = typeof msg.content === 'string'
+  //     ? msg.content.split("\n").map((line: string, index: number) => (
+  //       <p key={index}>{line}</p>
+  //     ))
+  //     : msg.content;
+
+  //   return (
+  //     <div key={msg.id} className={`chat-message ${isUser ? "user-message" : "bot-message"}`}>
+  //       <strong>{isUser ? "You" : "Bot"}:</strong> {content}
+  //     </div>
+  //   );
+  // };
 
   const renderMessage = (msg: any) => {
     const isUser = msg.role === "user";
@@ -53,6 +71,7 @@ const ChatPage: React.FC = () => {
     return (
       <div key={msg.id} className={`chat-message ${isUser ? "user-message" : "bot-message"}`}>
         <strong>{isUser ? "You" : "Bot"}:</strong> {content}
+       
       </div>
     );
   };

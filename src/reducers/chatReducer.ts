@@ -1,5 +1,3 @@
-// chatReducer.ts
-
 import { ChatActionTypes, ChatActions } from '../actions/types';
 
 interface ChatState {
@@ -40,6 +38,8 @@ export const chatReducer = (state = initialState, action: ChatActions): ChatStat
       return { ...state, error: action.payload };
     case ChatActionTypes.ADD_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
+    case ChatActionTypes.CLEAR_MESSAGES:
+      return { ...state, messages: [] };
     default:
       return state;
   }

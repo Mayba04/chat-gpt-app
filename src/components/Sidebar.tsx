@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserChats, deleteUserChat, selectChat } from '../actions/chatActions';
+import { fetchUserChats, deleteUserChat, selectChat, clearMessages } from '../actions/chatActions';
 import { RootState } from '../reducers';
 import { logoutUser } from '../actions/authActions';
 
@@ -42,6 +42,11 @@ const Sidebar: React.FC = () => {
     handleClose();
   };
 
+  const handleNewChat = () => {
+    dispatch(clearMessages());
+    dispatch(selectChat(null));  // Знімаємо вибір чату
+  };
+
   return (
     <>
       <Button variant="link" onClick={handleShow} className="toggle-button">
@@ -57,6 +62,7 @@ const Sidebar: React.FC = () => {
             <li><Link to="/chat" onClick={handleClose}>Chats</Link></li>
             <li><Link to="/profile" onClick={handleClose}>Profile</Link></li>
             <li><Button variant="link" onClick={handleLogout}>Logout</Button></li>
+            <Button variant="primary" onClick={handleNewChat}>Новий чат</Button>
             <hr />
             <ListGroup>
               {chats.map((chat) => (

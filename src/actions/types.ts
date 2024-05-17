@@ -49,7 +49,6 @@ export type UserActions =
   | LogoutUserAction
   | ForgotPasswordSuccessAction
   | ResetPasswordSuccessAction;
-
   export enum ChatActionTypes {
     FETCH_USER_CHATS_REQUEST = 'FETCH_USER_CHATS_REQUEST',
     FETCH_USER_CHATS_SUCCESS = 'FETCH_USER_CHATS_SUCCESS',
@@ -60,7 +59,8 @@ export type UserActions =
     SELECT_CHAT = 'SELECT_CHAT',
     FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS',
     FETCH_MESSAGES_FAILURE = 'FETCH_MESSAGES_FAILURE',
-    ADD_MESSAGE = 'ADD_MESSAGE'  
+    ADD_MESSAGE = 'ADD_MESSAGE',
+    CLEAR_MESSAGES = 'CLEAR_MESSAGES', 
   }
   
   interface FetchUserChatsRequestAction {
@@ -107,9 +107,13 @@ export type UserActions =
     payload: string;
   }
   
-  interface AddMessageAction { // Доданий інтерфейс для ADD_MESSAGE
+  interface AddMessageAction {
     type: ChatActionTypes.ADD_MESSAGE;
     payload: any;
+  }
+  
+  interface ClearMessagesAction {
+    type: ChatActionTypes.CLEAR_MESSAGES;
   }
   
   export type ChatActions =
@@ -122,6 +126,8 @@ export type UserActions =
     | SelectChatAction
     | FetchMessagesSuccessAction
     | FetchMessagesFailureAction
-    | AddMessageAction; 
+    | AddMessageAction
+    | ClearMessagesAction;
+  
   
 
