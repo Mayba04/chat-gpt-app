@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import {jwtDecode} from "jwt-decode";
 
 // Імпорт сервісів
-import { login, logout, forgotPassword, resetPassword } from "../services/api-user-service";
+import { login, forgotPassword, resetPassword } from "../services/api-user-service";
 import { UserActionTypes, UserActions } from "../actions/types";
 
 // Вхід користувача
@@ -21,7 +21,7 @@ export const loginUser = (user: any) => {
         toast.error(data.Message || "Login failed");
       } else {
         toast.success("Login successful!");
-        const { token } = data;
+        const { token } = data; // Отримуємо токен з даних
         console.log("Отримано токен", token);
         localStorage.setItem('token', token); 
         localStorage.setItem('AccessToken', token);
@@ -34,25 +34,29 @@ export const loginUser = (user: any) => {
   };
 };
 
-// Аутентифікація користувача
+//authUser
 export const authUser = (token: string, dispatch: Dispatch<UserActions>) => {
   try {
     const decodedToken = jwtDecode<any>(token);
     console.log("Декодований токен", decodedToken);
 
+    // Отримання ролі з декодованого токену
+    const roles = decodedToken.role || decodedToken.roles;
+    localStorage.setItem('role', roles);
+
     dispatch({ type: UserActionTypes.LOGIN_USER_SUCCESS, payload: { message: "Login successful!", decodedToken } });
+    dispatch({ type: UserActionTypes.SET_ROLE, payload: roles });
   } catch (ex) {
     console.log("Помилка при декодуванні токену", ex);
     dispatch({ type: UserActionTypes.LOGIN_USER_ERROR, payload: "Invalid token!" });
   }
 };
 
-// Інші дії...
-
 export const logoutUser = () => {
   return (dispatch: Dispatch<UserActions>) => {
     localStorage.removeItem('AccessToken');
     localStorage.removeItem('RefreshToken');
+    localStorage.clear();
     dispatch({ type: UserActionTypes.LOGOUT_USER });
     toast.success('Successfully logged out');
   };

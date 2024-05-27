@@ -6,6 +6,7 @@ interface ChatState {
   error: string | null;
   selectedChat: any | null;
   messages: any[];
+  adminComments: { [key: number]: any[] } | null;
 }
 
 const initialState: ChatState = {
@@ -14,6 +15,7 @@ const initialState: ChatState = {
   error: null,
   selectedChat: null,
   messages: [],
+  adminComments: {},
 };
 
 export const chatReducer = (state = initialState, action: ChatActions): ChatState => {
@@ -40,6 +42,20 @@ export const chatReducer = (state = initialState, action: ChatActions): ChatStat
       return { ...state, messages: [...state.messages, action.payload] };
     case ChatActionTypes.CLEAR_MESSAGES:
       return { ...state, messages: [] };
+    case ChatActionTypes.FETCH_ADMIN_COMMENT_SUCCESS:
+      return {
+        ...state,
+        adminComments: {
+          ...state.adminComments,
+          [action.payload.messageId]: action.payload.comments,
+        }
+      };
+    case ChatActionTypes.CLEAR_MESSAGES_AND_COMMENTS:
+      return {
+        ...state,
+        messages: [],
+        adminComments: {},
+      };
     default:
       return state;
   }

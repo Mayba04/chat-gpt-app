@@ -6,6 +6,7 @@ export enum UserActionTypes {
   LOGOUT_USER = 'LOGOUT_USER',
   FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS',
   RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS',
+  SET_ROLE = 'SET_ROLE'
 }
 
 interface StartRequestAction {
@@ -41,6 +42,11 @@ interface ResetPasswordSuccessAction {
   type: UserActionTypes.RESET_PASSWORD_SUCCESS;
 }
 
+interface SetRoleAction {
+  type: UserActionTypes.SET_ROLE;
+  payload: string;
+}
+
 export type UserActions =
   | StartRequestAction
   | LoginUserSuccessAction
@@ -48,7 +54,9 @@ export type UserActions =
   | ServerErrorAction
   | LogoutUserAction
   | ForgotPasswordSuccessAction
-  | ResetPasswordSuccessAction;
+  | ResetPasswordSuccessAction
+  | SetRoleAction;
+//chat
   export enum ChatActionTypes {
     FETCH_USER_CHATS_REQUEST = 'FETCH_USER_CHATS_REQUEST',
     FETCH_USER_CHATS_SUCCESS = 'FETCH_USER_CHATS_SUCCESS',
@@ -61,6 +69,9 @@ export type UserActions =
     FETCH_MESSAGES_FAILURE = 'FETCH_MESSAGES_FAILURE',
     ADD_MESSAGE = 'ADD_MESSAGE',
     CLEAR_MESSAGES = 'CLEAR_MESSAGES', 
+    FETCH_ADMIN_COMMENT_SUCCESS = 'FETCH_ADMIN_COMMENT_SUCCESS',
+    FETCH_ADMIN_COMMENT_FAILURE = 'FETCH_ADMIN_COMMENT_FAILURE',
+    CLEAR_MESSAGES_AND_COMMENTS = 'CLEAR_MESSAGES_AND_COMMENTS',
   }
   
   interface FetchUserChatsRequestAction {
@@ -115,6 +126,21 @@ export type UserActions =
   interface ClearMessagesAction {
     type: ChatActionTypes.CLEAR_MESSAGES;
   }
+
+  interface FetchAdminCommentSuccessAction {
+    type: ChatActionTypes.FETCH_ADMIN_COMMENT_SUCCESS;
+    payload: { messageId: number; comments: any[] };
+  }
+  
+  interface FetchAdminCommentFailureAction {
+    type: ChatActionTypes.FETCH_ADMIN_COMMENT_FAILURE;
+    payload: string;
+  }
+
+  
+  interface ClearMessagesAndComments {
+    type :ChatActionTypes.CLEAR_MESSAGES_AND_COMMENTS;
+  }
   
   export type ChatActions =
     | FetchUserChatsRequestAction
@@ -127,7 +153,48 @@ export type UserActions =
     | FetchMessagesSuccessAction
     | FetchMessagesFailureAction
     | AddMessageAction
-    | ClearMessagesAction;
+    | ClearMessagesAction
+    | FetchAdminCommentSuccessAction
+    | FetchAdminCommentFailureAction
+    | ClearMessagesAndComments;
+  // Admin
+  export enum AdminActionTypes {
+    FETCH_PENDING_VERIFICATION_SESSIONS_REQUEST = 'FETCH_PENDING_VERIFICATION_SESSIONS_REQUEST',
+    FETCH_PENDING_VERIFICATION_SESSIONS_SUCCESS = 'FETCH_PENDING_VERIFICATION_SESSIONS_SUCCESS',
+    FETCH_PENDING_VERIFICATION_SESSIONS_FAILURE = 'FETCH_PENDING_VERIFICATION_SESSIONS_FAILURE',
+    ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS',
+    ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE',
+  }
   
+  interface FetchPendingVerificationSessionsRequestAction {
+    type: AdminActionTypes.FETCH_PENDING_VERIFICATION_SESSIONS_REQUEST;
+  }
+
+  interface FetchPendingVerificationSessionsSuccessAction {
+    type: AdminActionTypes.FETCH_PENDING_VERIFICATION_SESSIONS_SUCCESS;
+    payload: any[];
+  }
+
+  interface FetchPendingVerificationSessionsFailureAction {
+    type: AdminActionTypes.FETCH_PENDING_VERIFICATION_SESSIONS_FAILURE;
+    payload: string;
+  }
+
+  interface AddCommentSuccessAction {
+    type: AdminActionTypes.ADD_COMMENT_SUCCESS;
+  }
+  
+  interface AddCommentFailureAction {
+    type: AdminActionTypes.ADD_COMMENT_FAILURE;
+    payload: string;
+  }
+
+  export type AdminActions =
+    | FetchPendingVerificationSessionsRequestAction
+    | FetchPendingVerificationSessionsSuccessAction
+    | FetchPendingVerificationSessionsFailureAction
+    | AddCommentSuccessAction
+    | AddCommentFailureAction;
   
 
+  

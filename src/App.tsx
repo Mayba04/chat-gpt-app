@@ -6,13 +6,16 @@ import LoginPage from './components/LoginPage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import ChatPage from './components/ChatPage';
 import Sidebar from './components/Sidebar';
+import SidebarAdmin from './components/SidebarAdmin'; // Додайте імпорт SidebarAdmin
 import './App.css';
 import { RootState } from './reducers';
 import ProfilePage from './components/ProfilePage';
 import ErrorPage from './components/ErrorPage';
+import PendingVerificationSessions from './components/PendingVerificationSessions'; // Додайте імпорт PendingVerificationSessions
 
 const App: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.user);
+  const role = useSelector((state: RootState) => state.user.role) || ''; // Встановіть порожній рядок, якщо роль null
 
   return (
     <Provider store={store}>
@@ -20,8 +23,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/chat" element={user ? <LayoutWithMenu><ChatPage /></LayoutWithMenu> : <Navigate to="/login" />} />
-          <Route path="/profile" element={user ? <LayoutWithMenu><ProfilePage /></LayoutWithMenu> : <Navigate to="/login" />} />
+          <Route path="/chat" element={user ? <LayoutWithMenu role={role}><ChatPage /></LayoutWithMenu> : <Navigate to="/login" />} />
+          <Route path="/profile" element={user ? <LayoutWithMenu role={role}><ProfilePage /></LayoutWithMenu> : <Navigate to="/login" />} />
+          <Route path="/pending-verification-sessions" element={role === 'Admin' ? <LayoutWithMenu role={role}><PendingVerificationSessions /></LayoutWithMenu> : <Navigate to="/login" />} />
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -30,10 +34,10 @@ const App: React.FC = () => {
   );
 };
 
-const LayoutWithMenu: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const LayoutWithMenu: React.FC<{ role: string; children: React.ReactNode }> = ({ role, children }) => {
   return (
     <div>
-      <Sidebar />
+      {role === 'Admin' ? <SidebarAdmin /> : <Sidebar />}
       {children}
     </div>
   );

@@ -15,13 +15,19 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/chat");
+      const role = localStorage.getItem('role');
+      if (role === 'Admin') {
+        navigate("/pending-verification-sessions");
+      } else {
+        navigate("/chat");
+      }
     }
   }, [user, navigate]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(loginUser({ email, password }) as any);
+    
   };
 
   return (

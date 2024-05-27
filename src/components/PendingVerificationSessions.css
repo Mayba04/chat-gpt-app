@@ -1,0 +1,30 @@
+.message-timestamp {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  body {
+    background-color: #f0f0f0; /* Світло-сірий фон */
+  }
+  
+  .pending-verification-sessions-container .chat-container {
+    background-color: #ffffff; /* Білий фон контейнерів */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .no-sessions-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .centered-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }

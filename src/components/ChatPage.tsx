@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../reducers';
-import { sendNewMessage, continueChat, fetchMessages } from '../actions/chatActions';
+import { sendNewMessage, continueChat, fetchMessages, fetchAdminComment } from '../actions/chatActions';
 import { ChatActionTypes } from '../actions/types';
 import "./ChatPage.css";
 
@@ -13,6 +13,7 @@ const ChatPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const selectedChat = useSelector((state: RootState) => state.chats.selectedChat);
   const messages = useSelector((state: RootState) => state.chats.messages);
+  const adminComments = useSelector((state: RootState) => state.chats.adminComments);
 
   useEffect(() => {
     if (selectedChat) {
@@ -25,14 +26,12 @@ const ChatPage: React.FC = () => {
     if (input.trim()) {
       const userMessage = { id: Date.now(), content: input, role: "user" };
       dispatch({ type: ChatActionTypes.ADD_MESSAGE, payload: userMessage });
-  
+
       setLoading(true);
       try {
         if (selectedChat) {
-          console.log(2);
           await dispatch(continueChat({ chatSessionId: selectedChat.id, prompt: input }) as any);
         } else {
-          console.log(1);
           await dispatch(sendNewMessage(input) as any);
         }
         setInput("");
@@ -43,22 +42,6 @@ const ChatPage: React.FC = () => {
       }
     }
   };
-  
-
-  // const renderMessage = (msg: any) => {
-  //   const isUser = msg.role === "user";
-  //   const content = typeof msg.content === 'string'
-  //     ? msg.content.split("\n").map((line: string, index: number) => (
-  //       <p key={index}>{line}</p>
-  //     ))
-  //     : msg.content;
-
-  //   return (
-  //     <div key={msg.id} className={`chat-message ${isUser ? "user-message" : "bot-message"}`}>
-  //       <strong>{isUser ? "You" : "Bot"}:</strong> {content}
-  //     </div>
-  //   );
-  // };
 
   const renderMessage = (msg: any) => {
     const isUser = msg.role === "user";
@@ -71,7 +54,20 @@ const ChatPage: React.FC = () => {
     return (
       <div key={msg.id} className={`chat-message ${isUser ? "user-message" : "bot-message"}`}>
         <strong>{isUser ? "You" : "Bot"}:</strong> {content}
-       
+        {msg.adminComment && (
+          <>
+            <Button variant="link" onClick={() => dispatch(fetchAdminComment(msg.id) as any)}>
+              View Admin Comment
+            </Button>
+            {adminComments && adminComments[msg.id] && (
+              <div>
+                {adminComments[msg.id].map((comment: any) => (
+                  <p key={comment.id}><strong>Admin Comment:</strong> {comment.comment}</p>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     );
   };

@@ -5,24 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserChats, deleteUserChat, selectChat, clearMessages } from '../actions/chatActions';
+import { fetchPendingVerificationSessionsAction } from '../actions/adminActions';
 import { RootState } from '../reducers';
 import { logoutUser } from '../actions/authActions';
 import { useLocation } from 'react-router-dom';
 
-
-const Sidebar: React.FC = () => {
+const SidebarAdmin: React.FC = () => {
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user.user);
-  const { chats } = useSelector((state: RootState) => state.chats);
+  const pendingMessages = useSelector((state: RootState) => state.admin.pendingVerificationSessions);
   const location = useLocation();
-
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchUserChats(user.Id) as any);
+      dispatch(fetchPendingVerificationSessionsAction() as any);
     }
   }, [dispatch, user]);
 
@@ -34,25 +32,6 @@ const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
-  const handleDeleteChat = (chatId: number) => {
-    dispatch(clearMessages());
-    console.log(chatId);
-    dispatch(deleteUserChat(chatId) as any);
-
-  };
-
-  const handleSelectChat = (chat: any) => {
-    dispatch(selectChat(chat));
-    handleClose();
-  };
-
-  const handleNewChat = () => {
-    if (location.pathname === '/chat') {
-      dispatch(clearMessages());
-      dispatch(selectChat(null));  // Знімаємо вибір чату
-    }
-  };
-
   return (
     <>
       <Button variant="link" onClick={handleShow} className="toggle-button">
@@ -61,21 +40,20 @@ const Sidebar: React.FC = () => {
 
       <Offcanvas show={show} onHide={handleClose} backdrop={false}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Menu</Offcanvas.Title>
+          <Offcanvas.Title>MenuAdmin</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="offcanvas-body">
           <ul className="list-unstyled">
             <li><Link to="/chat" onClick={handleClose}>Chats</Link></li>
             <li><Link to="/profile" onClick={handleClose}>Profile</Link></li>
             <li><Button variant="link" onClick={handleLogout}>Logout</Button></li>
-            <Button variant="primary" onClick={handleNewChat}>Новий чат</Button>
             <hr />
             <ListGroup>
-              {chats.map((chat) => (
-                <ListGroupItem key={chat.id} className="d-flex justify-content-between align-items-center">
-                  <div onClick={() => handleSelectChat(chat)}>{chat.name}</div>
-                  <Button variant="danger" size="sm" onClick={() => handleDeleteChat(chat.id)}>
-                    <FontAwesomeIcon icon={faTrash} />
+              {pendingMessages.map((message) => (
+                <ListGroupItem key={message.id} className="d-flex justify-content-between align-items-center">
+                  <div>{message.content}</div>
+                  <Button variant="primary" size="sm" onClick={() => navigate(`/comment/${message.id}`)}>
+                    Comment
                   </Button>
                 </ListGroupItem>
               ))}
@@ -91,4 +69,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarAdmin;

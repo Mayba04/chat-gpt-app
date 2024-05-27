@@ -28,7 +28,7 @@ export const deleteUserChat = (chatId: number) => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       dispatch({ type: ChatActionTypes.DELETE_USER_CHAT, payload: chatId });
-
+      
       const { user } = getState();
       if (user.user) {
         dispatch(fetchUserChats(user.user.Id) as any);
@@ -141,4 +141,22 @@ export const selectChat = (chat: any) => {
 
 export const clearMessages = () => ({
   type: ChatActionTypes.CLEAR_MESSAGES,
+});
+
+
+export const fetchAdminComment = (messageId: number) => {
+  return async (dispatch: Dispatch<ChatActions>) => {
+    try {
+      const response = await axios.get(`https://localhost:7004/api/AdminComment/${messageId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      dispatch({ type: ChatActionTypes.FETCH_ADMIN_COMMENT_SUCCESS, payload: { messageId, comments: response.data } });
+    } catch (error) {
+      console.error('Error fetching admin comment:', error);
+    }
+  };
+};
+
+export const clearMessagesAndComments = (): ChatActions => ({
+  type: ChatActionTypes.CLEAR_MESSAGES_AND_COMMENTS,
 });

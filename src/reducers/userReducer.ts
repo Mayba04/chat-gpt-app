@@ -2,12 +2,14 @@ import { UserActions, UserActionTypes } from '../actions/types';
 
 export interface UserState {
   user: any;
+  role: string | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
+  role: null,
   loading: false,
   error: null,
 };
@@ -26,6 +28,8 @@ const userReducer = (state = initialState, action: UserActions): UserState => {
     case UserActionTypes.FORGOT_PASSWORD_SUCCESS:
     case UserActionTypes.RESET_PASSWORD_SUCCESS:
       return { ...state, loading: false, error: null };
+    case UserActionTypes.SET_ROLE:
+      return { ...state, role: action.payload, loading: false, error: null };
     default:
       return state;
   }
