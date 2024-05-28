@@ -29,8 +29,10 @@ export const resetPassword = async (data: any) => {
 export const fetchPendingVerificationSessions = async () => {
   return await axios.get(`${API_URL}/Chat/pending-verification-sessions`, getAuthHeaders());
 };
+
 export const updateAdminCommentAPI = async (comment: any) => {
-  return await axios.put(`${API_URL}/admin/comments/${comment.id}`, comment, getAuthHeaders());
+  console.log("Update API Comment:", comment); // Додаємо лог для перевірки даних перед відправкою
+  return await axios.put(`${API_URL}/admincomment`, comment, getAuthHeaders());
 };
 
 export const deleteAdminCommentAPI = async (commentId: number) => {

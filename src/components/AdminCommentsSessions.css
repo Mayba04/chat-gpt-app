@@ -6,13 +6,13 @@ body {
   }
   
   /* Стилі для контейнера чату */
-  .chat-container {
-    background-color: #ffffff; /* Білий фон контейнерів */
+  .chat-container-admin {
+    background-color: #ffffff; 
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    height: 100vh; /* Висота на всю сторінку */
-  }
+    height: 100vh; 
+  } 
   
   /* Централізація зображення */
   .centered-image-container {
@@ -67,3 +67,18 @@ body {
     margin-top: 20px;
   }
   
+  
+  .no-sessions-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .centered-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }

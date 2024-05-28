@@ -5,6 +5,9 @@ import { fetchMessages, fetchAdminComment, clearMessagesAndComments } from '../a
 import { RootState } from '../reducers';
 import { ListGroup, Button, Container, Row, Col, Form, Card, Modal } from 'react-bootstrap';
 import './AdminCommentsSessions.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 const AdminCommentsSessions: React.FC = () => {
     const dispatch = useDispatch();
@@ -15,9 +18,14 @@ const AdminCommentsSessions: React.FC = () => {
     const [comment, setComment] = useState<string>('');
     const [selectedMessageId, setSelectedMessageId] = useState<number | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    const [currentComment, setCurrentComment] = useState<string>('');
     const [commentToDelete, setCommentToDelete] = useState<any>(null);
     const [showAdminComment, setShowAdminComment] = useState<{ [key: number]: boolean }>({});
-    const [showEditCommentForm, setShowEditCommentForm] = useState<{ [key: number]: boolean }>({});
+    const [loadingAdminComment, setLoadingAdminComment] = useState<boolean>(false);
+    const [viewedAdminComments, setViewedAdminComments] = useState<{ [key: number]: boolean }>({});
+    const [adminCommentId, setAdminCommentId] = useState<number | null>(null);
+
 
     useEffect(() => {
         dispatch(fetchVerifiedSessionsWithComments() as any);
@@ -28,46 +36,66 @@ const AdminCommentsSessions: React.FC = () => {
         dispatch(fetchMessages(sessionId) as any);
     };
 
-    const handleEditComment = (messageId: number, existingComment: string) => {
-        setSelectedMessageId(messageId);
-        setComment(existingComment);
-        setShowEditCommentForm({ [messageId]: true });
+    const refreshPage = () => {
+        window.location.reload();
     };
 
-    const handleDeleteComment = async (messageId: number) => {
-        setSelectedMessageId(messageId);
+    const handleEditComment = async (messageId: number) => {
+        setSelectedMessageId(messageId); // Спочатку встановлюємо selectedMessageId
+        setLoadingAdminComment(true);
         await dispatch(fetchAdminComment(messageId) as any);
-
-        if (adminComments) {
+        setLoadingAdminComment(false);
+    
+        if (adminComments && adminComments[messageId]) {
             const adminComment = adminComments[messageId];
-            if (adminComment) {
-                setCommentToDelete(adminComment[0]);
-            }
+            setComment(adminComment[0].comment);
+            setAdminCommentId(adminComment[0].id);
+            setShowEditModal(true);
         }
+    };
+    
+    const handleDeleteComment = async (messageId: number) => {
+        setLoadingAdminComment(true);
+        await dispatch(fetchAdminComment(messageId) as any);
+        setLoadingAdminComment(false);
 
-        setShowDeleteModal(true);
+        if (adminComments && adminComments[messageId]) {
+            const adminComment = adminComments[messageId];
+            setCommentToDelete(adminComment[0]);
+            setShowDeleteModal(true);
+        }
     };
 
     const handleViewAdminComment = async (messageId: number) => {
-        await dispatch(fetchAdminComment(messageId) as any);
-        setShowAdminComment(prevState => ({ ...prevState, [messageId]: true }));
+        if (!viewedAdminComments[messageId]) {
+            setLoadingAdminComment(true);
+            await dispatch(fetchAdminComment(messageId) as any);
+            setLoadingAdminComment(false);
+    
+            setShowAdminComment(prevState => ({ ...prevState, [messageId]: true }));
+            setViewedAdminComments(prevState => ({ ...prevState, [messageId]: true })); // Зберігаємо стан натиснутої кнопки
+        }
     };
-
+    
     const handleSubmitComment = async () => {
-        if (selectedMessageId !== null) {
+        if (selectedMessageId !== null && comment.trim() !== ''  && adminCommentId !== null) {
             const commentDTO = {
-                MessageId: selectedMessageId,
+                Id: adminCommentId,
                 Comment: comment,
-                CreatedAt: new Date().toISOString(),
-                AdminId: 1 // Replace with actual admin ID
             };
             await dispatch(updateAdminComment(commentDTO) as any);
             setComment('');
             setSelectedMessageId(null);
-            setShowEditCommentForm({});
+            setShowEditModal(false);
             dispatch(fetchMessages(selectedSession) as any);
+            refreshPage();
+        } else {
+            alert('Comment cannot be empty.');
         }
     };
+
+    
+    
 
     const confirmDeleteComment = async () => {
         if (commentToDelete && commentToDelete.id) {
@@ -75,11 +103,12 @@ const AdminCommentsSessions: React.FC = () => {
             setShowDeleteModal(false);
             setCommentToDelete(null);
             dispatch(fetchMessages(selectedSession) as any);
+            refreshPage();
         }
     };
 
     return (
-        <Container fluid className="chat-container">
+        <Container fluid className="chat-container-admin">
             <Row className="h-100">
                 <Col md={4} className="border-end pe-3 session-list h-100">
                     <Card className="mt-3 mb-3 shadow h-100">
@@ -92,7 +121,7 @@ const AdminCommentsSessions: React.FC = () => {
                                 {verifiedSessionsWithComments.length > 0 ? (
                                     verifiedSessionsWithComments.map((session: any) => (
                                         <ListGroup.Item key={session.id} action onClick={() => handleSessionClick(session.id)}>
-                                            {session.name} - {new Date(session.createdAt).toLocaleString()}
+                                            {session.name} - {new Date(session.created).toLocaleString()}
                                         </ListGroup.Item>
                                     ))
                                 ) : (
@@ -110,19 +139,29 @@ const AdminCommentsSessions: React.FC = () => {
                             {selectedSession ? (
                                 <>
                                     <h3>Session Name: {verifiedSessionsWithComments.find((session: any) => session.id === selectedSession)?.name}</h3>
-                                    <p>Created At: {new Date(verifiedSessionsWithComments.find((session: any) => session.id === selectedSession)?.createdAt).toLocaleString()}</p>
                                     <ListGroup>
                                         {messages.map((message: any) => (
                                             <ListGroup.Item key={message.id} className="message-item">
                                                 <strong>{message.role === 'user' ? 'User' : 'Bot'}:</strong> {message.content}
                                                 <div style={{ fontSize: 'small', color: 'gray' }}>
-                                                    {new Date(message.createdAt).toLocaleString()}
+                                                {new Date(message.timestamp).toLocaleString()}
                                                 </div>
                                                 {message.adminComment && (
                                                     <>
-                                                        <Button variant="link" onClick={() => handleViewAdminComment(message.id)}>
-                                                            View Admin Comment
+                                                        <Button variant="link" 
+                                                            onClick={() => handleViewAdminComment(message.id)} 
+                                                            disabled={viewedAdminComments[message.id]}
+                                                            title="View Admin Comment">
+                                                            <FontAwesomeIcon icon={faEye} />
                                                         </Button>
+                                                        
+                                                       {/* <Button
+                                                            variant="link"
+                                                            onClick={() => handleViewAdminComment(message.id)}
+                                                            disabled={viewedAdminComments[message.id]} 
+                                                        >
+                                                            View Admin Comment
+                                                        </Button> */}
                                                         {showAdminComment[message.id] && adminComments && adminComments[message.id] && adminComments[message.id].map((comment: any, index: number) => (
                                                             <p key={index}><strong>Admin Comment:</strong> {comment.comment}</p>
                                                         ))}
@@ -130,36 +169,24 @@ const AdminCommentsSessions: React.FC = () => {
                                                 )}
                                                 {message.role === 'assistant' && message.adminComment && (
                                                     <>
-                                                        <Button variant="link" onClick={() => handleDeleteComment(message.id)}>
-                                                            Delete Comment
+                                                        <Button variant="link" onClick={() => handleDeleteComment(message.id)} title="Delete Comment">
+                                                            {/* Delete Comment */}
+                                                            <FontAwesomeIcon icon={faTrash} />
                                                         </Button>
-                                                        <Button variant="link" onClick={() => handleEditComment(message.id, message.adminComment.comment)}>
-                                                            Edit Comment
+                                                        <Button variant="link" onClick={() => handleEditComment(message.id)} title="Edit Comment">
+                                                            {/* Edit Comment */}
+                                                            <FontAwesomeIcon icon={faEdit} />
                                                         </Button>
                                                     </>
                                                 )}
                                             </ListGroup.Item>
                                         ))}
                                     </ListGroup>
-                                    {selectedMessageId !== null && showEditCommentForm[selectedMessageId] && (
-                                        <Form>
-                                            <Form.Group controlId="formComment">
-                                                <Form.Label>Edit Comment</Form.Label>
-                                                <Form.Control
-                                                    as="textarea"
-                                                    rows={3}
-                                                    value={comment}
-                                                    onChange={(e) => setComment(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                            <Button variant="primary" onClick={handleSubmitComment}>
-                                                Submit Comment
-                                            </Button>
-                                        </Form>
-                                    )}
                                 </>
                             ) : (
-                                <p>No session selected</p>
+                                <div className="centered-image-container">
+                                    <img src='/img/no-session selected.png' alt="No sessions selected" className="no-sessions-image" />
+                                </div>
                             )}
                         </Card.Body>
                     </Card>
@@ -170,8 +197,14 @@ const AdminCommentsSessions: React.FC = () => {
                     <Modal.Title>Confirm Delete</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Are you sure you want to delete this comment?</p>
-                    <p><strong>Comment:</strong> {commentToDelete?.comment}</p>
+                    {loadingAdminComment ? (
+                        <p>Loading...</p>
+                    ) : (
+                        <>
+                            <p>Are you sure you want to delete this comment?</p>
+                            <p><strong>Comment:</strong> {commentToDelete?.comment}</p>
+                        </>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
@@ -182,8 +215,40 @@ const AdminCommentsSessions: React.FC = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Comment</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {loadingAdminComment ? (
+                    <p>Loading...</p>
+                ) : (
+                    <Form>
+                        <Form.Group controlId="formComment">
+                            <Form.Label>Edit Comment</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={handleSubmitComment} disabled={loadingAdminComment}>
+                    Save
+                </Button>
+            </Modal.Footer>
+        </Modal>
         </Container>
     );
 };
 
 export default AdminCommentsSessions;
+
+
