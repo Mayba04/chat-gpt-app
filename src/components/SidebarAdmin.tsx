@@ -6,21 +6,25 @@ import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPendingVerificationSessionsAction } from '../actions/adminActions';
+import { fetchUserChats, deleteUserChat, selectChat, clearMessages } from '../actions/chatActions';
 import { RootState } from '../reducers';
 import { logoutUser } from '../actions/authActions';
 import { useLocation } from 'react-router-dom';
 
 const SidebarAdmin: React.FC = () => {
+  
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user.user);
+  const { chats } = useSelector((state: RootState) => state.chats);
   const pendingMessages = useSelector((state: RootState) => state.admin.pendingVerificationSessions);
   const location = useLocation();
 
   useEffect(() => {
     if (user) {
       dispatch(fetchPendingVerificationSessionsAction() as any);
+      dispatch(fetchUserChats(user.Id) as any);
     }
   }, [dispatch, user]);
 
@@ -30,6 +34,18 @@ const SidebarAdmin: React.FC = () => {
   const handleLogout = () => {
     dispatch(logoutUser() as any);
     navigate('/login');
+  };
+
+  const handleDeleteChat = (chatId: number) => {
+    dispatch(clearMessages());
+    console.log(chatId);
+    dispatch(deleteUserChat(chatId) as any);
+
+  };
+
+  const handleSelectChat = (chat: any) => {
+    dispatch(selectChat(chat));
+    handleClose();
   };
 
   return (
@@ -46,14 +62,17 @@ const SidebarAdmin: React.FC = () => {
           <ul className="list-unstyled">
             <li><Link to="/chat" onClick={handleClose}>Chats</Link></li>
             <li><Link to="/profile" onClick={handleClose}>Profile</Link></li>
+            <li><Link to="/admin-comments-sessions" onClick={handleClose}>Verified sessions</Link></li>
+            <li><Link to="/pending-verification-sessions" onClick={handleClose}>Sessions to check</Link></li>
             <li><Button variant="link" onClick={handleLogout}>Logout</Button></li>
+
             <hr />
             <ListGroup>
-              {pendingMessages.map((message) => (
-                <ListGroupItem key={message.id} className="d-flex justify-content-between align-items-center">
-                  <div>{message.content}</div>
-                  <Button variant="primary" size="sm" onClick={() => navigate(`/comment/${message.id}`)}>
-                    Comment
+              {chats.map((chat) => (
+                <ListGroupItem key={chat.id} className="d-flex justify-content-between align-items-center">
+                  <div onClick={() => handleSelectChat(chat)}>{chat.name}</div>
+                  <Button variant="danger" size="sm" onClick={() => handleDeleteChat(chat.id)}>
+                    <FontAwesomeIcon icon={faTrash} />
                   </Button>
                 </ListGroupItem>
               ))}

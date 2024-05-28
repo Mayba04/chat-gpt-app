@@ -5,7 +5,6 @@ import { fetchMessages, fetchAdminComment, clearMessagesAndComments } from '../a
 import { RootState } from '../reducers';
 import './PendingVerificationSessions.css';
 import { ListGroup, Button, Container, Row, Col, Form, Card } from 'react-bootstrap';
-import noActiveSessionsImg from '/img/no_active_sessions.webp';
 
 const PendingVerificationSessions: React.FC = () => {
   const dispatch = useDispatch();
@@ -60,21 +59,29 @@ const PendingVerificationSessions: React.FC = () => {
               <Card.Body>
                 <Card.Title>Pending Verification Sessions</Card.Title>
                 <hr />
-                {loading && <p>Loading...</p>}
-                {error && <p>Error: {error}</p>}
-                <ListGroup>
-                  {pendingVerificationSessions.length > 0 ? (
-                    pendingVerificationSessions.map((session: any) => (
-                      <ListGroup.Item key={session.id} action onClick={() => handleSessionClick(session.id)}>
-                        {session.name} - {new Date(session.createdAt).toLocaleString()}
-                      </ListGroup.Item>
-                    ))
-                  ) : (
-                  <div className="centered-image-container">
-                    <img src='/img/no_active_sessions.png' alt="No active sessions" className="no-sessions-image" />
+                {loading ? (
+                  <div className="d-flex justify-content-center">
+                    <div className="spinner-border" role="status">
+                      <span className="sr-only">Loading...</span>
+                    </div>
                   </div>
-                  )}
-                </ListGroup>
+                ) : error ? (
+                  <p>Error: {error}</p>
+                ) : (
+                  <ListGroup>
+                    {pendingVerificationSessions.length > 0 ? (
+                      pendingVerificationSessions.map((session: any) => (
+                        <ListGroup.Item key={session.id} action onClick={() => handleSessionClick(session.id)}>
+                          {session.name} - {new Date(session.created).toLocaleString()}
+                        </ListGroup.Item>
+                      ))
+                    ) : (
+                      <div className="centered-image-container">
+                        <img src='/img/no_active_sessions.png' alt="No active sessions" className="no-sessions-image" />
+                      </div>
+                    )}
+                  </ListGroup>
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -86,13 +93,12 @@ const PendingVerificationSessions: React.FC = () => {
                 {selectedSession ? (
                   <>
                     <h3>Session Name: {pendingVerificationSessions.find((session: any) => session.id === selectedSession)?.name}</h3>
-                    <p>Created At: {new Date(pendingVerificationSessions.find((session: any) => session.id === selectedSession)?.createdAt).toLocaleString()}</p>
                     <ListGroup>
                       {messages.map((message: any) => (
                         <ListGroup.Item key={message.id} className="message-item">
                           <strong>{message.role === 'user' ? 'User' : 'Bot'}:</strong> {message.content}
                           <div style={{ fontSize: 'small', color: 'gray' }}>
-                            {new Date(message.createdAt).toLocaleString()}
+                            {new Date(message.timestamp).toLocaleString()}
                           </div>
                           {message.role === 'assistant' && (
                             <>

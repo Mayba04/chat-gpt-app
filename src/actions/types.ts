@@ -162,8 +162,15 @@ export type UserActions =
     FETCH_PENDING_VERIFICATION_SESSIONS_REQUEST = 'FETCH_PENDING_VERIFICATION_SESSIONS_REQUEST',
     FETCH_PENDING_VERIFICATION_SESSIONS_SUCCESS = 'FETCH_PENDING_VERIFICATION_SESSIONS_SUCCESS',
     FETCH_PENDING_VERIFICATION_SESSIONS_FAILURE = 'FETCH_PENDING_VERIFICATION_SESSIONS_FAILURE',
+    FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_REQUEST = 'FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_REQUEST',
+    FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_SUCCESS = 'FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_SUCCESS',
+    FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_FAILURE = 'FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_FAILURE',
     ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS',
     ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE',
+    UPDATE_ADMIN_COMMENT_SUCCESS = 'UPDATE_ADMIN_COMMENT_SUCCESS',
+    UPDATE_ADMIN_COMMENT_FAILURE = 'UPDATE_ADMIN_COMMENT_FAILURE',
+    DELETE_ADMIN_COMMENT_SUCCESS = 'DELETE_ADMIN_COMMENT_SUCCESS',
+    DELETE_ADMIN_COMMENT_FAILURE = 'DELETE_ADMIN_COMMENT_FAILURE',
   }
   
   interface FetchPendingVerificationSessionsRequestAction {
@@ -180,6 +187,20 @@ export type UserActions =
     payload: string;
   }
 
+  interface FetchVerifiedSessionsWithCommentsRequestAction {
+    type: AdminActionTypes.FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_REQUEST;
+  }
+
+  interface FetchVerifiedSessionsWithCommentsSuccessAction {
+    type: AdminActionTypes.FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_SUCCESS;
+    payload: any[];
+  }
+
+  interface FetchVerifiedSessionsWithCommentsFailureAction {
+    type: AdminActionTypes.FETCH_VERIFIED_WITH_COMMENTS_SESSIONS_FAILURE;
+    payload: string;
+  }
+
   interface AddCommentSuccessAction {
     type: AdminActionTypes.ADD_COMMENT_SUCCESS;
   }
@@ -189,12 +210,39 @@ export type UserActions =
     payload: string;
   }
 
+  interface UpdateAdminCommentSuccessAction {
+    type: AdminActionTypes.UPDATE_ADMIN_COMMENT_SUCCESS;
+    payload: any;
+  }
+
+  interface UpdateAdminCommentFailureAction {
+      type: AdminActionTypes.UPDATE_ADMIN_COMMENT_FAILURE;
+      payload: string;
+  }
+
+  interface DeleteAdminCommentSuccessAction {
+      type: AdminActionTypes.DELETE_ADMIN_COMMENT_SUCCESS;
+      payload: number;
+  }
+
+  interface DeleteAdminCommentFailureAction {
+      type: AdminActionTypes.DELETE_ADMIN_COMMENT_FAILURE;
+      payload: string;
+  }
+
   export type AdminActions =
     | FetchPendingVerificationSessionsRequestAction
     | FetchPendingVerificationSessionsSuccessAction
     | FetchPendingVerificationSessionsFailureAction
+    | FetchVerifiedSessionsWithCommentsRequestAction
+    | FetchVerifiedSessionsWithCommentsSuccessAction
+    | FetchVerifiedSessionsWithCommentsFailureAction
     | AddCommentSuccessAction
-    | AddCommentFailureAction;
+    | AddCommentFailureAction
+    | UpdateAdminCommentSuccessAction
+    | UpdateAdminCommentFailureAction
+    | DeleteAdminCommentSuccessAction
+    | DeleteAdminCommentFailureAction;
   
 
   

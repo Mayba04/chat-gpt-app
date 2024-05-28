@@ -1,0 +1,69 @@
+/* AdminCommentsSessions.css */
+
+/* Загальні стилі */
+body {
+    background-color: #f0f0f0; /* Світло-сірий фон */
+  }
+  
+  /* Стилі для контейнера чату */
+  .chat-container {
+    background-color: #ffffff; /* Білий фон контейнерів */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 100vh; /* Висота на всю сторінку */
+  }
+  
+  /* Централізація зображення */
+  .centered-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  /* Стилі для зображення, яке відображає відсутність сесій */
+  .no-sessions-image {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Стилі для заголовків карток */
+  .card-title {
+    font-weight: bold;
+  }
+  
+  /* Стилі для контейнера з повідомленнями */
+  .message-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  /* Стилі для меток часу повідомлень */
+  .message-timestamp {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  
+  /* Стилі для кнопок */
+  button {
+    margin-top: 10px;
+  }
+  
+  /* Стилі для списку сесій */
+  .session-list {
+    overflow-y: auto; /* Прокрутка по вертикалі */
+  }
+  
+  /* Стилі для деталей сесії */
+  .session-details {
+    overflow-y: auto; /* Прокрутка по вертикалі */
+  }
+  
+  /* Стилі для форми коментарів */
+  .form-comment {
+    margin-top: 20px;
+  }
+  

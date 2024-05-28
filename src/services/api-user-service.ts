@@ -28,4 +28,17 @@ export const resetPassword = async (data: any) => {
 
 export const fetchPendingVerificationSessions = async () => {
   return await axios.get(`${API_URL}/Chat/pending-verification-sessions`, getAuthHeaders());
-};;
+};
+export const updateAdminCommentAPI = async (comment: any) => {
+  return await axios.put(`${API_URL}/admin/comments/${comment.id}`, comment, getAuthHeaders());
+};
+
+export const deleteAdminCommentAPI = async (commentId: number) => {
+  console.log(commentId);
+  return await axios.delete(`${API_URL}/admincomment/${commentId}`, getAuthHeaders());
+};
+
+
+export const fetchVerifiedSessionsWithCommentsAPI = async () => {
+  return await axios.get(`${API_URL}/Chat/chat-sessions-with-admin-comments`, getAuthHeaders());
+};
