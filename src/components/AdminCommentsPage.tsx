@@ -115,8 +115,17 @@ const AdminCommentsSessions: React.FC = () => {
                         <Card.Body>
                             <Card.Title>Sessions with Admin Comments</Card.Title>
                             <hr />
-                            {loading && <p>Loading...</p>}
-                            {error && <p>Error: {error}</p>}
+                            {loading &&  
+                            <div className="d-flex justify-content-center">
+                                <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                                </div>
+                            </div>}
+                            {error &&
+                            <div className="alert alert-danger" role="alert">
+                                <p>Error: {error}</p>
+                            </div>
+                            }
                             <ListGroup>
                                 {verifiedSessionsWithComments.length > 0 ? (
                                     verifiedSessionsWithComments.map((session: any) => (
@@ -125,7 +134,9 @@ const AdminCommentsSessions: React.FC = () => {
                                         </ListGroup.Item>
                                     ))
                                 ) : (
-                                    <p>No sessions with admin comments</p>
+                                    <div className="centered-image-container">
+                                    <img src='/img/no_sessions_with_admin_comments.png' alt="No sessions selected" className="no-sessions-image" />
+                                </div>
                                 )}
                             </ListGroup>
                         </Card.Body>

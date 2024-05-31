@@ -46,7 +46,8 @@ export const sendNewMessage = (prompt: string) => {
       console.log("sendNewMessage: Sending message", { userId, prompt });
 
       const response: AxiosResponse<any, any> = await axios.post(
-        `https://localhost:7004/api/Chat/send`,
+        //`https://localhost:7004/api/Chat/send`, //3.5 GPT
+         `https://localhost:7004/api/Chat/ask`,
         JSON.stringify(prompt),
         {
           headers: {
@@ -61,7 +62,7 @@ export const sendNewMessage = (prompt: string) => {
       const chatSessionId = parseInt(chatSessionStr.split(':')[1].trim());
       const chatId = chatIdStr.split(':')[1].trim();
       const message = messageStr.split(':')[1].trim();
-      
+      console.log("response",  response.data)
       console.log("ChatSession:", chatSessionId);
       console.log("Chat ID:", chatId);
       console.log("Message:", message);
@@ -88,7 +89,10 @@ export const continueChat = (messageData: { chatSessionId: number, prompt: strin
     try {
       console.log(2);
       console.log("continueChat: Continuing chat", messageData);
-      const response = await axios.post(`https://localhost:7004/api/Chat/continue`, messageData, {
+      const response = await axios.post(
+        // `https://localhost:7004/api/Chat/continue`, 
+        `https://localhost:7004/api/Chat/continue/ask`, 
+        messageData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       console.log("continueChat: Response received", response.data);

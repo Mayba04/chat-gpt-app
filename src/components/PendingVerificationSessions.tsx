@@ -66,7 +66,9 @@ const PendingVerificationSessions: React.FC = () => {
                     </div>
                   </div>
                 ) : error ? (
+                  <div className="alert alert-danger" role="alert">
                   <p>Error: {error}</p>
+              </div>
                 ) : (
                   <ListGroup>
                     {pendingVerificationSessions.length > 0 ? (
