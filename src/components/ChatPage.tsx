@@ -74,11 +74,11 @@ const ChatPage: React.FC = () => {
 
   return (
     <Container fluid className="chat-container">
-      <Row className="chat-header">
-        <Col>
-          <h2>ChatGPT</h2>
-        </Col>
-      </Row>
+     <Row className="chat-header">
+      <Col className="text-center">
+        <h2>ChatGPT</h2>
+      </Col>
+    </Row>
       <Row className="chat-content">
         <Col>
           <div className="chat-messages">

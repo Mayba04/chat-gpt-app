@@ -5,12 +5,15 @@
     background-color: #1e1e1e;
     color: #fff;
   }
+
   
   .chat-header {
-    padding: 20px;
-    background-color: #282828;
-    border-bottom: 1px solid #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px; /* Можна змінити на будь-яку висоту, яку ви хочете */
   }
+  
   
   .chat-content {
     flex: 1;
