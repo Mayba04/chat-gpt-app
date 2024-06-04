@@ -14,6 +14,7 @@ export const login = async (user: any) => {
   return await axios.post(`${API_URL}/Auth/login`, user);
 };
 
+
 export const logout = async (id: string) => {
   return await axios.post(`${API_URL}/Auth/logout`, { id });
 };
@@ -43,4 +44,13 @@ export const deleteAdminCommentAPI = async (commentId: number) => {
 
 export const fetchVerifiedSessionsWithCommentsAPI = async () => {
   return await axios.get(`${API_URL}/Chat/chat-sessions-with-admin-comments`, getAuthHeaders());
+};
+
+export const updateProfile = async (userData: FormData) => {
+  return await axios.put(`${API_URL}/user/update`, userData, getAuthHeaders());
+};
+
+
+export const updateUserPassword = async (userPassword: FormData) => {
+  return await axios.put(`${API_URL}/user/updatepassword`, userPassword, getAuthHeaders());
 };

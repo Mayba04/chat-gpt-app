@@ -6,7 +6,14 @@ export enum UserActionTypes {
   LOGOUT_USER = 'LOGOUT_USER',
   FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS',
   RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS',
-  SET_ROLE = 'SET_ROLE'
+  SET_ROLE = 'SET_ROLE',
+  UPDATE_USER_PROFILE_REQUEST = 'UPDATE_USER_PROFILE_REQUEST',
+  UPDATE_USER_PROFILE_SUCCESS = 'UPDATE_USER_PROFILE_SUCCESS',
+  UPDATE_USER_PROFILE_FAILURE = 'UPDATE_USER_PROFILE_FAILURE',
+  
+  UPDATE_USER_PASSWORD_SUCCESS = 'UPDATE_USER_PASSWORD_SUCCESS',
+  UPDATE_USER_PASSWORD_FAILURE = 'UPDATE_USER_PASSWORD_FAILURE',
+  UPDATE_USER_PASSWORD_REQUEST = 'UPDATE_USER_PASSWORD_REQUEST',
 }
 
 interface StartRequestAction {
@@ -47,6 +54,36 @@ interface SetRoleAction {
   payload: string;
 }
 
+interface UpdateUserProfileRequestAction {
+  type: typeof UserActionTypes.UPDATE_USER_PROFILE_REQUEST;
+}
+
+interface UpdateUserProfileSuccessAction {
+  type: typeof UserActionTypes.UPDATE_USER_PROFILE_SUCCESS;
+  payload: any; 
+}
+
+interface UpdateUserProfileFailureAction {
+  type: typeof UserActionTypes.UPDATE_USER_PROFILE_FAILURE;
+  payload: string;
+}
+
+
+interface UpdateUserPasswordRequestAction {
+  type: typeof UserActionTypes.UPDATE_USER_PASSWORD_REQUEST;
+}
+
+interface UpdateUserPasswordSuccessAction {
+  type: typeof UserActionTypes.UPDATE_USER_PASSWORD_SUCCESS;
+  payload: any; 
+}
+
+interface UpdateUserPasswordFailureAction {
+  type: typeof UserActionTypes.UPDATE_USER_PASSWORD_FAILURE;
+  payload: string;
+}
+
+
 export type UserActions =
   | StartRequestAction
   | LoginUserSuccessAction
@@ -55,7 +92,13 @@ export type UserActions =
   | LogoutUserAction
   | ForgotPasswordSuccessAction
   | ResetPasswordSuccessAction
-  | SetRoleAction;
+  | SetRoleAction
+  | UpdateUserProfileRequestAction
+  | UpdateUserProfileSuccessAction
+  | UpdateUserProfileFailureAction
+  | UpdateUserPasswordRequestAction
+  | UpdateUserPasswordSuccessAction
+  | UpdateUserPasswordFailureAction;
 //chat
   export enum ChatActionTypes {
     FETCH_USER_CHATS_REQUEST = 'FETCH_USER_CHATS_REQUEST',

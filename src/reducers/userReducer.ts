@@ -30,6 +30,17 @@ const userReducer = (state = initialState, action: UserActions): UserState => {
       return { ...state, loading: false, error: null };
     case UserActionTypes.SET_ROLE:
       return { ...state, role: action.payload, loading: false, error: null };
+    case UserActionTypes.UPDATE_USER_PROFILE_REQUEST:
+      return { ...state, loading: true };
+    case UserActionTypes.UPDATE_USER_PROFILE_SUCCESS:
+      return { ...state, loading: false, user: action.payload, error: null };
+    case UserActionTypes.UPDATE_USER_PROFILE_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    case UserActionTypes.UPDATE_USER_PASSWORD_SUCCESS:
+        return { ...state, loading: false, user: action.payload };
+    case UserActionTypes.UPDATE_USER_PROFILE_FAILURE:
+    case UserActionTypes.UPDATE_USER_PASSWORD_FAILURE:
+        return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
