@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { Provider, useSelector } from 'react-redux';
 import store from './store';
 import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import ChatPage from './components/ChatPage';
 import Sidebar from './components/Sidebar';
@@ -23,6 +24,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/chat" element={user ? <LayoutWithMenu role={role}><ChatPage /></LayoutWithMenu> : <Navigate to="/login" />} />
           <Route path="/profile" element={user ? <LayoutWithMenu role={role}><ProfilePage /></LayoutWithMenu> : <Navigate to="/login" />} />

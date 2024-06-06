@@ -54,3 +54,7 @@ export const updateProfile = async (userData: FormData) => {
 export const updateUserPassword = async (userPassword: FormData) => {
   return await axios.put(`${API_URL}/user/updatepassword`, userPassword, getAuthHeaders());
 };
+
+export const register = async (user: any) => {
+  return await axios.post(`${API_URL}/Auth/register`, user);
+};

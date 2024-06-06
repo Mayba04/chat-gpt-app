@@ -14,7 +14,12 @@ export enum UserActionTypes {
   UPDATE_USER_PASSWORD_SUCCESS = 'UPDATE_USER_PASSWORD_SUCCESS',
   UPDATE_USER_PASSWORD_FAILURE = 'UPDATE_USER_PASSWORD_FAILURE',
   UPDATE_USER_PASSWORD_REQUEST = 'UPDATE_USER_PASSWORD_REQUEST',
+
+  REGISTER_USER_START_REQUEST = 'REGISTER_USER_START_REQUEST',
+  REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS',
+  REGISTER_USER_ERROR = 'REGISTER_USER_ERROR',
 }
+
 
 interface StartRequestAction {
   type: UserActionTypes.START_REQUEST;
@@ -84,6 +89,23 @@ interface UpdateUserPasswordFailureAction {
 }
 
 
+interface RegisterUserStartRequestAction {
+  type: UserActionTypes.REGISTER_USER_START_REQUEST;
+}
+
+interface RegisterUserSuccess 
+{
+  type: UserActionTypes.REGISTER_USER_SUCCESS;
+  payload: any
+}
+
+interface RegisterUserError {
+  type: UserActionTypes.REGISTER_USER_ERROR;
+  payload: string;
+}
+
+
+
 export type UserActions =
   | StartRequestAction
   | LoginUserSuccessAction
@@ -98,7 +120,10 @@ export type UserActions =
   | UpdateUserProfileFailureAction
   | UpdateUserPasswordRequestAction
   | UpdateUserPasswordSuccessAction
-  | UpdateUserPasswordFailureAction;
+  | UpdateUserPasswordFailureAction
+  |RegisterUserStartRequestAction
+  |RegisterUserSuccess
+  |RegisterUserError;
 //chat
   export enum ChatActionTypes {
     FETCH_USER_CHATS_REQUEST = 'FETCH_USER_CHATS_REQUEST',
