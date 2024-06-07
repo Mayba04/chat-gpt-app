@@ -11,6 +11,7 @@ import SidebarAdmin from './components/SidebarAdmin';
 import './App.css';
 import { RootState } from './reducers';
 import ProfilePage from './components/ProfilePage';
+import ConfirmEmail from './components/ConfirmEmail';
 import ErrorPage from './components/ErrorPage';
 import AdminCommentsPage from './components/AdminCommentsPage';
 import PendingVerificationSessions from './components/PendingVerificationSessions'; 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/confirmemail" element={<ConfirmEmail/>} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/chat" element={user ? <LayoutWithMenu role={role}><ChatPage /></LayoutWithMenu> : <Navigate to="/login" />} />
           <Route path="/profile" element={user ? <LayoutWithMenu role={role}><ProfilePage /></LayoutWithMenu> : <Navigate to="/login" />} />

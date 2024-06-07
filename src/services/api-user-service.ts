@@ -58,3 +58,12 @@ export const updateUserPassword = async (userPassword: FormData) => {
 export const register = async (user: any) => {
   return await axios.post(`${API_URL}/Auth/register`, user);
 };
+
+export const confirmEmail = async (userId: string, token: string) => {
+  const formData = new FormData();
+  formData.append('userId', userId);
+  formData.append('token', token);
+  
+  const response = await axios.post(`${API_URL}/Auth/confirmemail`, formData);
+  return response.data;
+};
